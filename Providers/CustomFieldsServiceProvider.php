@@ -65,9 +65,12 @@ class CustomFieldsServiceProvider extends ServiceProvider
                 ->where('name', $operator, $pattern)->pluck('id')->all();
             if ($checkboxIds) {
                 $query = $query->orWhereIn('conversations.id', function ($sub) use ($checkboxIds) {
+                    // value = '1' is the only thing a checkbox ever writes; the test also
+                    // skips leftovers from a field that was switched to checkbox later.
                     $sub->select('conversation_id')
                         ->from('conversation_custom_field')
-                        ->whereIn('custom_field_id', $checkboxIds);
+                        ->whereIn('custom_field_id', $checkboxIds)
+                        ->where('value', '1');
                 });
             }
 
