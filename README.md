@@ -7,7 +7,8 @@ sidebar. Agent-only, global (not per-mailbox). Free alternative to the paid cust
 Dropdown, Multiselect, Single line, Multi line, Tags, Number, Date, Checkbox.
 
 Checkbox is a single boolean: ticked stores `1`, unticked stores no row at all, so an absent value reads as false.
-Checkbox values are excluded from the global search (a bare `1` would match indiscriminately).
+Checkbox values are excluded from the global search (a bare `1` would match indiscriminately);
+searching a checkbox field's **name** instead returns the conversations where that box is ticked.
 
 ## How it works
 - **Manage → Custom Fields** (admins): create/edit/delete field definitions.

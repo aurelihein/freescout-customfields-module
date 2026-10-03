@@ -49,7 +49,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
             $operator = CustomFieldService::searchLikeOperator(\Helper::isPgSql());
             $pattern  = CustomFieldService::searchLikePattern($q);
 
-            return $query->orWhereIn('conversations.id', function ($sub) use ($operator, $pattern) {
+            $query = $query->orWhereIn('conversations.id', function ($sub) use ($operator, $pattern) {
                 // Checkboxes store a bare '1'; matching them would make a search for "1"
                 // return every conversation with any box ticked.
                 $sub->select('conversation_custom_field.conversation_id')
@@ -58,6 +58,20 @@ class CustomFieldsServiceProvider extends ServiceProvider
                     ->where('custom_fields.type', '!=', 'checkbox')
                     ->where('conversation_custom_field.value', $operator, $pattern);
             });
+
+            // A ticked checkbox carries no searchable text of its own, so its name is the
+            // search term: matching it returns the conversations holding a row for it.
+            $checkboxIds = CustomField::where('type', 'checkbox')
+                ->where('name', $operator, $pattern)->pluck('id')->all();
+            if ($checkboxIds) {
+                $query = $query->orWhereIn('conversations.id', function ($sub) use ($checkboxIds) {
+                    $sub->select('conversation_id')
+                        ->from('conversation_custom_field')
+                        ->whereIn('custom_field_id', $checkboxIds);
+                });
+            }
+
+            return $query;
         }, 20, 3);
 
         // Bloc éditable dans la sidebar de conversation.
