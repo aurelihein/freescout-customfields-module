@@ -4,7 +4,7 @@ namespace Modules\CustomFields\Services;
 
 class CustomFieldService
 {
-    const TYPES = ['dropdown', 'multiselect', 'singleline', 'multiline', 'tags', 'number', 'date'];
+    const TYPES = ['dropdown', 'multiselect', 'singleline', 'multiline', 'tags', 'number', 'date', 'checkbox'];
     const MULTI_TYPES = ['multiselect', 'tags'];
 
     public static function isMultiValue(string $type): bool
@@ -16,6 +16,10 @@ class CustomFieldService
     public static function serialize(string $type, $input): ?string
     {
         switch ($type) {
+            // Unchecked stores nothing: the caller deletes the row, so absent == false.
+            case 'checkbox':
+                return filter_var($input, FILTER_VALIDATE_BOOLEAN) ? '1' : null;
+
             case 'number':
                 if ($input === null || $input === '') {
                     return null;

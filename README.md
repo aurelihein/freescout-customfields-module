@@ -1,10 +1,13 @@
 # FreeScout Custom Fields Module
 
-Admin-defined custom fields (7 types) stored per conversation, shown and edited in the conversation
+Admin-defined custom fields (8 types) stored per conversation, shown and edited in the conversation
 sidebar. Agent-only, global (not per-mailbox). Free alternative to the paid custom-fields module.
 
 ## Field types
-Dropdown, Multiselect, Single line, Multi line, Tags, Number, Date.
+Dropdown, Multiselect, Single line, Multi line, Tags, Number, Date, Checkbox.
+
+Checkbox is a single boolean: ticked stores `1`, unticked stores no row at all, so an absent value reads as false.
+Checkbox values are excluded from the global search (a bare `1` would match indiscriminately).
 
 ## How it works
 - **Manage → Custom Fields** (admins): create/edit/delete field definitions.

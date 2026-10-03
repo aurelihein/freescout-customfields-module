@@ -22,4 +22,5 @@ return [
     'tags' => 'Tags',
     'number' => 'Number',
     'date' => 'Date',
+    'checkbox' => 'Checkbox',
 ];

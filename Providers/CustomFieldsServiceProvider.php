@@ -50,9 +50,13 @@ class CustomFieldsServiceProvider extends ServiceProvider
             $pattern  = CustomFieldService::searchLikePattern($q);
 
             return $query->orWhereIn('conversations.id', function ($sub) use ($operator, $pattern) {
-                $sub->select('conversation_id')
+                // Checkboxes store a bare '1'; matching them would make a search for "1"
+                // return every conversation with any box ticked.
+                $sub->select('conversation_custom_field.conversation_id')
                     ->from('conversation_custom_field')
-                    ->where('value', $operator, $pattern);
+                    ->join('custom_fields', 'custom_fields.id', '=', 'conversation_custom_field.custom_field_id')
+                    ->where('custom_fields.type', '!=', 'checkbox')
+                    ->where('conversation_custom_field.value', $operator, $pattern);
             });
         }, 20, 3);
 

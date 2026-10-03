@@ -3,6 +3,12 @@
     $options = CustomFieldService::parseOptions($field->options);
 @endphp
 <div class="cf-field">
+    @if ($field->type === 'checkbox')
+        {{-- Label sits on the box's own line; a stacked cf-label would leave it orphaned. --}}
+        <label class="cf-check">
+            <input type="checkbox" name="cf[{{ $field->id }}]" value="1" @if ($value) checked @endif> {{ $field->name }}
+        </label>
+    @else
     <label class="cf-label">{{ $field->name }}</label>
     @switch($field->type)
         @case('dropdown')
@@ -35,4 +41,5 @@
         @default
             <input type="text" name="cf[{{ $field->id }}]" class="form-control input-sm" value="{{ $value }}">
     @endswitch
+    @endif
 </div>

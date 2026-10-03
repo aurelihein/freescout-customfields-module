@@ -30,6 +30,18 @@ class CustomFieldServiceTest extends TestCase
         $this->assertNull(CustomFieldService::serialize('date', '2026-13-40'));
     }
 
+    public function test_checkbox_is_one_or_nothing(): void
+    {
+        $this->assertSame('1', CustomFieldService::serialize('checkbox', '1'));
+        $this->assertSame('1', CustomFieldService::serialize('checkbox', 'on'));
+        $this->assertSame('1', CustomFieldService::serialize('checkbox', true));
+        $this->assertNull(CustomFieldService::serialize('checkbox', '0'));
+        $this->assertNull(CustomFieldService::serialize('checkbox', null));
+        $this->assertSame('1', CustomFieldService::deserialize('checkbox', '1'));
+        $this->assertNull(CustomFieldService::deserialize('checkbox', null));
+        $this->assertFalse(CustomFieldService::isMultiValue('checkbox'));
+    }
+
     public function test_multiselect_and_tags_roundtrip_json(): void
     {
         $this->assertSame('["a","b"]', CustomFieldService::serialize('multiselect', ['a', ' b ', '']));
